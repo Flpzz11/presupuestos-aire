@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com;">
+<title>Presupuestos — Consultora</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blue:#0453b2;
+  --red:#ff1a4b;
+  --lightblue:#b1ccf2;
+  --bg:#f4f3ee;
+  --text:#101010;
+  --white:#ffffff;
+  --border:#dde3ee;
+  --surface:#ffffff;
+  --surface2:#eef2f9;
+  --muted:#6b7280;
+  --success:#0a7c3e;
+  --success-bg:#e6f4ed;
+  --shadow:0 2px 12px rgba(4,83,178,.08);
+  --radius:10px;
+  --radius-sm:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-weight:400}
+.topbar{background:var(--blue);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(4,83,178,.18)}
+.topbar-title{color:#fff;font-size:14px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.topbar-title .dot{width:8px;height:8px;background:var(--red);border-radius:50%;display:inline-block}
+.topbar-badge{background:rgba(177,204,242,.22);color:var(--lightblue);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:.03em;border:1px solid rgba(177,204,242,.3)}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.25rem 3rem}
+.page-title{font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-.01em}
+.page-subtitle{font-size:16px;font-weight:700;color:var(--blue);margin-bottom:1.75rem}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.section-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.section-icon{width:28px;height:28px;background:var(--lightblue);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-icon svg{width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.section-title{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.field input,.field textarea,.field select{font-family:'Manrope',sans-serif;font-size:13px;font-weight:500;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;transition:border-color .15s,background .15s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--blue);background:#fff}
+.field textarea{resize:vertical;min-height:64px}
+.mb{margin-bottom:10px}
+.col-header{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;padding-left:2px}
+.profile-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 36px;gap:8px;align-items:end;margin-bottom:8px}
+.logistic-row{display:grid;grid-template-columns:2.5fr 1.5fr 1fr 36px;gap:8px;align-items:end;margin-bottom:8px}
+.provider-row{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 36px;gap:8px;align-items:end;margin-bottom:8px}
+.item-row{display:grid;grid-template-columns:2.5fr .7fr 1fr 1fr 36px;gap:8px;align-items:end;margin-bottom:8px}
+.dyn-input,.dyn-select{font-family:'Manrope',sans-serif;font-size:13px;font-weight:500;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);width:100%;transition:border-color .15s,background .15s}
+.dyn-input:focus,.dyn-select:focus{outline:none;border-color:var(--blue);background:#fff}
+.btn-icon{width:36px;height:39px;border:1.5px solid #fca5a5;border-radius:var(--radius-sm);background:transparent;color:#ef4444;cursor:pointer;font-size:18px;line-height:1;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.btn-icon:hover{background:#fee2e2;border-color:var(--red);color:var(--red)}
+.btn-add{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;padding:7px 14px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;transition:all .15s;letter-spacing:.02em}
+.btn-add:hover{background:var(--surface2);color:var(--blue);border-color:var(--lightblue)}
+
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.metrics-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.metric{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.875rem 1rem}
+.metric .mlabel{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.metric .mvalue{font-size:14px;font-weight:700;color:var(--text)}
+.metric.hi{background:var(--surface2);border-color:var(--lightblue)}
+.metric.hi .mvalue{color:var(--blue);font-size:16px}
+.metric.bonus{background:#fff5f7;border-color:#ffc4d0}
+.metric.bonus .mvalue{color:var(--red)}
+.metric.total-card{background:var(--blue);border-color:var(--blue)}
+.metric.total-card .mlabel{color:rgba(255,255,255,.7)}
+.metric.total-card .mvalue{color:#fff;font-size:18px;font-weight:800}
+
+.sep{border:none;border-top:1px solid var(--border);margin:.875rem 0}
+
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.03em}
+.badge-int{background:#dbeafe;color:#1d4ed8}
+.badge-ext{background:#fef3c7;color:#b45309}
+.badge-prov{background:#fee2e2;color:#b91c1c}
+.badge-log{background:var(--surface2);color:var(--blue)}
+
+.btn-primary{font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:11px 26px;border:none;border-radius:var(--radius-sm);background:var(--blue);color:#fff;cursor:pointer;letter-spacing:.02em;transition:opacity .15s,transform .1s}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:11px 24px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer;letter-spacing:.02em;transition:all .15s}
+.btn-secondary:hover{background:var(--surface2);border-color:var(--lightblue);color:var(--blue)}
+.btn-danger{font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:11px 24px;border:1.5px solid #fca5a5;border-radius:var(--radius-sm);background:#fff;color:var(--red);cursor:pointer;letter-spacing:.02em;transition:all .15s}
+.btn-danger:hover{background:#fee2e2}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-bottom:2rem;flex-wrap:wrap}
+
+/* bono highlight */
+.bono-section{background:linear-gradient(135deg,#fff5f7 0%,#fff 100%);border:1.5px solid #ffc4d0}
+.bono-section .section-icon{background:#ffe4ea}
+.bono-section .section-icon svg{stroke:var(--red)}
+.bono-section .section-title{color:var(--red)}
+
+/* PREVIEW */
+#preview-area{display:none}
+.preview-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem 2.25rem;box-shadow:var(--shadow)}
+.pv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+.pv-company{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.01em}
+.pv-service{font-size:13px;color:var(--muted);margin-top:3px}
+.pv-meta{font-size:12px;color:var(--muted);text-align:right;line-height:1.6}
+.pv-num{font-size:13px;font-weight:700;color:var(--blue)}
+.pv-sec{font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;margin:1rem 0 .3rem;display:flex;align-items:center;gap:6px}
+.pv-sec::after{content:'';flex:1;height:1px;background:var(--lightblue)}
+.preview-table{width:100%;border-collapse:collapse;font-size:12px;margin:.25rem 0 .5rem}
+.preview-table th{text-align:left;font-size:10px;font-weight:700;color:var(--muted);padding:5px 0;border-bottom:1.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+.preview-table td{padding:7px 0;border-bottom:1px solid #f3f3f3;vertical-align:top}
+.preview-table .num{text-align:right}
+.totals-block{margin-left:auto;width:300px;font-size:13px}
+.totals-row{display:flex;justify-content:space-between;padding:5px 0;font-weight:500}
+.totals-row.sub{color:var(--muted);font-weight:400}
+.totals-row.bono-row{color:var(--red);font-weight:700}
+.totals-row.mg{color:var(--success);font-weight:700}
+.totals-row.total-final{font-weight:800;font-size:16px;border-top:2px solid var(--text);margin-top:6px;padding-top:10px;color:var(--text)}
+
+@media print{
+  .topbar,.actions,.btn-add,.btn-icon{display:none!important}
+  body{background:#fff}
+  .container{padding:0}
+  .preview-card{box-shadow:none;border:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title"><img src="loguito-aire.png" alt="Logo Aire" style="height:32px;object-fit:contain;"/><span class="dot"></span>Presupuestos · Consultora</div>
+  <div class="topbar-badge">Soles PEN</div>
+</div>
+
+<div class="container">
+
+<!-- FORMULARIO -->
+<div id="form-area">
+  <div class="page-title">Nuevo presupuesto</div>
+  <div class="page-subtitle">Completa los datos del proyecto y el equipo</div>
+
+  <!-- Cliente -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="section-title">Datos del cliente y proyecto</div>
+    </div>
+    <div class="grid2 mb">
+      <div class="field"><label>Nombre del cliente</label><input id="cli-nombre" placeholder="Empresa S.A.C."/></div>
+      <div class="field"><label>RUC</label><input id="cli-ruc" placeholder="20XXXXXXXXX"/></div>
+    </div>
+    <div class="grid2 mb">
+      <div class="field"><label>Proyecto / servicio</label><input id="proj-nombre" placeholder="Nombre del proyecto"/></div>
+      <div class="field"><label>Vigencia del presupuesto</label><input id="proj-vigencia" placeholder="30 días"/></div>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>N° presupuesto</label><input id="pres-num" readonly style="color:var(--muted)"/></div>
+      <div class="field"><label>Fecha</label><input id="pres-fecha" readonly style="color:var(--muted)"/></div>
+      <div class="field"><label>Forma de pago</label><input id="pres-pago" placeholder="50% adelanto / 50% entrega"/></div>
+    </div>
+  </div>
+
+  <!-- Equipo -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <div class="section-title">Perfiles del equipo — tarifas por hora</div>
+    </div>
+    <div class="profile-row" style="margin-bottom:4px">
+      <div class="col-header">Perfil / nombre</div>
+      <div class="col-header">Tipo</div>
+      <div class="col-header">Tarifa/hora (S/)</div>
+      <div class="col-header">Horas estimadas</div>
+      <div></div>
+    </div>
+    <div id="profiles-container"></div>
+    <button class="btn-add" onclick="addProfile()">+ Agregar perfil</button>
+  </div>
+
+  <!-- Ítems -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <div class="section-title">Ítems del servicio / entregables</div>
+    </div>
+    <div class="item-row" style="margin-bottom:4px">
+      <div class="col-header">Descripción</div>
+      <div class="col-header">Cant.</div>
+      <div class="col-header">Precio unit. (S/)</div>
+      <div class="col-header">Subtotal</div>
+      <div></div>
+    </div>
+    <div id="items-container"></div>
+    <button class="btn-add" onclick="addItem()">+ Agregar ítem</button>
+  </div>
+
+  <!-- Logística -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+      <div class="section-title">Costos logísticos</div>
+    </div>
+    <div class="logistic-row" style="margin-bottom:4px">
+      <div class="col-header">Descripción</div>
+      <div class="col-header">Categoría</div>
+      <div class="col-header">Monto (S/)</div>
+      <div></div>
+    </div>
+    <div id="logistics-container"></div>
+    <button class="btn-add" onclick="addLogistic()">+ Agregar costo logístico</button>
+  </div>
+
+  <!-- Proveedores -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <div class="section-title">Pagos a proveedores</div>
+    </div>
+    <div class="provider-row" style="margin-bottom:4px">
+      <div class="col-header">Proveedor / servicio</div>
+      <div class="col-header">Concepto</div>
+      <div class="col-header">Moneda</div>
+      <div class="col-header">Monto</div>
+      <div></div>
+    </div>
+    <div id="providers-container"></div>
+    <button class="btn-add" onclick="addProvider()">+ Agregar proveedor</button>
+  </div>
+
+  <!-- Resumen financiero -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="section-title">Resumen financiero</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric"><div class="mlabel">Costo equipo (S/)</div><div class="mvalue" id="m-equipo">0.00</div></div>
+      <div class="metric"><div class="mlabel">Costo ítems (S/)</div><div class="mvalue" id="m-items">0.00</div></div>
+      <div class="metric"><div class="mlabel">Logística (S/)</div><div class="mvalue" id="m-logistic">0.00</div></div>
+      <div class="metric"><div class="mlabel">Proveedores (S/)</div><div class="mvalue" id="m-prov">0.00</div></div>
+    </div>
+
+    <div class="metrics-grid2">
+      <div class="metric bonus"><div class="mlabel">Bono de venta</div><div class="mvalue" id="m-bono-val">—</div></div>
+      <div class="metric hi"><div class="mlabel">Margen de ganancia</div><div class="mvalue" id="m-margen-val">—</div></div>
+      <div class="metric"><div class="mlabel">Subtotal sin IGV (S/)</div><div class="mvalue" id="m-subtotal">0.00</div></div>
+      <div class="metric total-card"><div class="mlabel">Total con IGV (S/)</div><div class="mvalue" id="m-total">0.00</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px">
+      <div class="field"><label>Bono de venta (%)</label><input type="number" id="bono" value="5" min="0" max="100" oninput="recalc()" style="border-color:#ffc4d0"/></div>
+      <div class="field"><label>Margen de ganancia (%)</label><input type="number" id="margen" value="30" min="0" max="200" oninput="recalc()"/></div>
+      <div class="field"><label>IGV (%)</label><input type="number" id="igv" value="18" min="0" max="30" oninput="recalc()"/></div>
+      <div class="field"><label>Descuento (S/)</label><input type="number" id="descuento" value="0" min="0" oninput="recalc()"/></div>
+      <div class="field"><label>T.C. USD → S/</label><input type="number" id="tc" value="3.75" min="1" step=".01" oninput="recalc()"/></div>
+    </div>
+    <div class="field"><label>Notas / condiciones adicionales</label><textarea id="notas" placeholder="Incluye reuniones de seguimiento, entregables en PDF, hasta 2 rondas de revisión..."></textarea></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-danger" onclick="resetForm()">🔄 Nuevo presupuesto</button>
+    <button class="btn-secondary" onclick="showPreview()">👁 Vista previa</button>
+    <button class="btn-primary" onclick="showPreview()">Generar presupuesto →</button>
+  </div>
+</div><!-- /form-area -->
+
+<!-- VISTA PREVIA -->
+<div id="preview-area">
+  <div class="page-title" style="margin-bottom:4px">Vista previa</div>
+  <div class="page-subtitle" style="margin-bottom:1.25rem">Revisa antes de exportar</div>
+
+  <div class="preview-card" id="printable">
+    <!-- Cabecera -->
+    <div class="pv-header">
+      <div>
+        <div class="pv-company" id="pv-company">—</div>
+        <div class="pv-service">Propuesta de servicios de consultoría</div>
+      </div>
+      <div class="pv-meta">
+        <div class="pv-num" id="pv-num">—</div>
+        <div id="pv-fecha">—</div>
+        <div id="pv-vigencia">—</div>
+      </div>
+    </div>
+    <div style="background:var(--blue);height:3px;border-radius:2px;margin-bottom:1.25rem"></div>
+
+    <!-- Cliente -->
+    <div style="margin-bottom:1rem">
+      <div class="pv-sec">Cliente</div>
+      <div style="font-size:15px;font-weight:800" id="pv-cliente">—</div>
+      <div style="font-size:13px;color:var(--muted)" id="pv-ruc">—</div>
+    </div>
+
+    <div class="pv-sec">Equipo del proyecto</div>
+    <table class="preview-table"><thead><tr><th>Perfil</th><th>Tipo</th><th class="num">S//h</th><th class="num">Horas</th><th class="num">Costo (S/)</th></tr></thead><tbody id="pv-profiles-body"></tbody></table>
+
+    <div class="pv-sec">Ítems / entregables</div>
+    <table class="preview-table"><thead><tr><th>Descripción</th><th class="num">Cant.</th><th class="num">Precio unit.</th><th class="num">Subtotal (S/)</th></tr></thead><tbody id="pv-items-body"></tbody></table>
+
+    <div class="pv-sec">Costos logísticos</div>
+    <table class="preview-table"><thead><tr><th>Descripción</th><th>Categoría</th><th class="num">Monto (S/)</th></tr></thead><tbody id="pv-logistics-body"></tbody></table>
+
+    <div class="pv-sec">Pagos a proveedores</div>
+    <table class="preview-table"><thead><tr><th>Proveedor / servicio</th><th>Concepto</th><th class="num">Moneda</th><th class="num">Monto orig.</th><th class="num">En S/</th></tr></thead><tbody id="pv-providers-body"></tbody></table>
+
+    <hr class="sep"/>
+    <div style="display:flex;justify-content:flex-end;margin-top:.75rem">
+      <div class="totals-block">
+        <div class="totals-row sub"><span>Costo equipo</span><span id="pv-t-equipo">S/ 0.00</span></div>
+        <div class="totals-row sub"><span>Costo ítems</span><span id="pv-t-items">S/ 0.00</span></div>
+        <div class="totals-row sub"><span>Costos logísticos</span><span id="pv-t-log">S/ 0.00</span></div>
+        <div class="totals-row sub"><span>Pagos a proveedores</span><span id="pv-t-prov">S/ 0.00</span></div>
+        <div class="totals-row" style="border-top:1px solid var(--border);margin-top:3px;padding-top:6px"><span>Subtotal costos</span><span id="pv-t-costosub">S/ 0.00</span></div>
+        <div class="totals-row bono-row"><span id="pv-t-bono-label">Bono de venta (5%)</span><span id="pv-t-bono">S/ 0.00</span></div>
+        <div class="totals-row mg"><span id="pv-t-margen-label">Margen (30%)</span><span id="pv-t-margen">S/ 0.00</span></div>
+        <div class="totals-row sub"><span>Descuento</span><span id="pv-t-desc">— S/ 0.00</span></div>
+        <div class="totals-row"><span id="pv-t-igv-label">IGV (18%)</span><span id="pv-t-igv">S/ 0.00</span></div>
+        <div class="totals-row total-final"><span>TOTAL</span><span id="pv-t-total">S/ 0.00</span></div>
+      </div>
+    </div>
+
+    <hr class="sep"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+      <div>
+        <div style="font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Forma de pago</div>
+        <div style="font-size:13px" id="pv-pago">—</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Notas y condiciones</div>
+        <div style="font-size:13px;color:var(--muted)" id="pv-notas">—</div>
+      </div>
+    </div>
+  </div><!-- /printable -->
+
+  <div class="actions" style="margin-top:1rem">
+    <button class="btn-danger" onclick="backToForm()">← Volver a editar</button>
+    <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+    <button class="btn-primary" onclick="exportPDF()">⬇ Exportar PDF</button>
+  </div>
+</div><!-- /preview-area -->
+
+</div><!-- /container -->
+
+<script>
+let TC=3.75;
+let pC=0,iC=0,lC=0,prC=0;
+
+const fmt=n=>Number(n).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function genNum(){
+  const d=new Date();
+  return 'PRE-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+'-'+String(Math.floor(Math.random()*900)+100);
+}
+
+function initDefaults(){
+  document.getElementById('pres-num').value=genNum();
+  const d=new Date();
+  document.getElementById('pres-fecha').value=d.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  addProfile('Consultor senior','interno',180,40);
+  addProfile('Consultor junior','interno',90,60);
+  addProfile('Diseñador UX','externo',120,20);
+  addProfile('Especialista TI','externo',150,10);
+  addItem('Diagnóstico y levantamiento de información',1,3500);
+  addItem('Informe de consultoría ejecutivo',1,2000);
+  addLogistic('Traslado a sede del cliente','Transporte',350);
+  addLogistic('Materiales de trabajo y papelería','Materiales',180);
+  addProvider('Imprenta Express SAC','Impresión de informes','PEN',800);
+  addProvider('Software Analytics Pro','Licencia herramienta','USD',120);
+}
+
+function addProfile(nombre='',tipo='interno',tarifa='',horas=''){
+  pC++;const id=pC;
+  const c=document.getElementById('profiles-container');
+  const div=document.createElement('div');
+  div.className='profile-row';div.id='profile-'+id;
+  div.innerHTML=`
+    <div><input class="dyn-input" placeholder="Ej: Consultor senior" value="${nombre}" oninput="recalc()"/></div>
+    <div><select class="dyn-select" oninput="recalc()">
+      <option value="interno" ${tipo==='interno'?'selected':''}>Interno</option>
+      <option value="externo" ${tipo==='externo'?'selected':''}>Externo</option>
+    </select></div>
+    <div><input class="dyn-input" type="number" placeholder="0.00" value="${tarifa}" min="0" oninput="recalc()"/></div>
+    <div><input class="dyn-input" type="number" placeholder="0" value="${horas}" min="0" oninput="recalc()"/></div>
+    <button class="btn-icon" onclick="removeRow('profile-${id}')" title="Eliminar">×</button>`;
+  c.appendChild(div);recalc();
+}
+
+function addItem(desc='',cant='',precio=''){
+  iC++;const id=iC;
+  const c=document.getElementById('items-container');
+  const div=document.createElement('div');
+  div.className='item-row';div.id='item-'+id;
+  div.innerHTML=`
+    <div><input class="dyn-input" placeholder="Descripción del servicio o entregable" value="${desc}" oninput="recalc()"/></div>
+    <div><input class="dyn-input" type="number" placeholder="1" value="${cant}" min="0" oninput="recalc()"/></div>
+    <div><input class="dyn-input" type="number" placeholder="0.00" value="${precio}" min="0" oninput="recalc()"/></div>
+    <div><input class="dyn-input" readonly id="isub-${id}" style="color:var(--muted)"/></div>
+    <button class="btn-icon" onclick="removeRow('item-${id}')" title="Eliminar">×</button>`;
+  c.appendChild(div);recalc();
+}
+
+function addLogistic(desc='',cat='Transporte',monto=''){
+  lC++;const id=lC;
+  const cats=['Transporte','Alojamiento','Alimentación','Materiales','Comunicaciones','Otros'];
+  const opts=cats.map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('');
+  const c=document.getElementById('logistics-container');
+  const div=document.createElement('div');
+  div.className='logistic-row';div.id='log-'+id;
+  div.innerHTML=`
+    <div><input class="dyn-input" placeholder="Ej: Pasajes Lima-Cusco" value="${desc}" oninput="recalc()"/></div>
+    <div><select class="dyn-select" oninput="recalc()">${opts}</select></div>
+    <div><input class="dyn-input" type="number" placeholder="0.00" value="${monto}" min="0" oninput="recalc()"/></div>
+    <button class="btn-icon" onclick="removeRow('log-${id}')" title="Eliminar">×</button>`;
+  c.appendChild(div);recalc();
+}
+
+function addProvider(nombre='',concepto='',moneda='PEN',monto=''){
+  prC++;const id=prC;
+  const c=document.getElementById('providers-container');
+  const div=document.createElement('div');
+  div.className='provider-row';div.id='prov-'+id;
+  div.innerHTML=`
+    <div><input class="dyn-input" placeholder="Nombre del proveedor" value="${nombre}" oninput="recalc()"/></div>
+    <div><input class="dyn-input" placeholder="Ej: Desarrollo de software" value="${concepto}" oninput="recalc()"/></div>
+    <div><select class="dyn-select" oninput="recalc()">
+      <option value="PEN" ${moneda==='PEN'?'selected':''}>S/ PEN</option>
+      <option value="USD" ${moneda==='USD'?'selected':''}>$ USD</option>
+    </select></div>
+    <div><input class="dyn-input" type="number" placeholder="0.00" value="${monto}" min="0" oninput="recalc()"/></div>
+    <button class="btn-icon" onclick="removeRow('prov-${id}')" title="Eliminar">×</button>`;
+  c.appendChild(div);recalc();
+}
+
+function removeRow(id){const el=document.getElementById(id);if(el)el.remove();recalc();}
+
+function calcAll(){
+  TC=parseFloat(document.getElementById('tc').value)||3.75;
+  let eq=0,it=0,lg=0,pv=0;
+  document.querySelectorAll('#profiles-container .profile-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    eq+=(parseFloat(inp[1].value)||0)*(parseFloat(inp[2].value)||0);
+  });
+  document.querySelectorAll('#items-container .item-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    const s=(parseFloat(inp[1].value)||0)*(parseFloat(inp[2].value)||0);
+    it+=s;if(inp[3])inp[3].value=s>0?'S/ '+fmt(s):'';
+  });
+  document.querySelectorAll('#logistics-container .logistic-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');lg+=parseFloat(inp[1].value)||0;
+  });
+  document.querySelectorAll('#providers-container .provider-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    const sel=r.querySelector('select');
+    const mon=sel?sel.value:'PEN';
+    const m=parseFloat(inp[2].value)||0;
+    pv+=mon==='USD'?m*TC:m;
+  });
+  const bonoPct=parseFloat(document.getElementById('bono').value)||0;
+  const margenPct=parseFloat(document.getElementById('margen').value)||0;
+  const igvPct=parseFloat(document.getElementById('igv').value)||18;
+  const desc=parseFloat(document.getElementById('descuento').value)||0;
+  const subtotalCostos=eq+it+lg+pv;
+  const bonoMonto=subtotalCostos*(bonoPct/100);
+  const margenMonto=(subtotalCostos+bonoMonto)*(margenPct/100);
+  const base=subtotalCostos+bonoMonto+margenMonto-desc;
+  const igvMonto=base*(igvPct/100);
+  const total=base+igvMonto;
+  return{eq,it,lg,pv,subtotalCostos,bonoPct,bonoMonto,margenPct,margenMonto,igvPct,igvMonto,desc,base,total};
+}
+
+function recalc(){
+  const r=calcAll();
+  document.getElementById('m-equipo').textContent=fmt(r.eq);
+  document.getElementById('m-items').textContent=fmt(r.it);
+  document.getElementById('m-logistic').textContent=fmt(r.lg);
+  document.getElementById('m-prov').textContent=fmt(r.pv);
+  document.getElementById('m-bono-val').textContent=r.bonoPct+'%  →  S/ '+fmt(r.bonoMonto);
+  document.getElementById('m-margen-val').textContent=r.margenPct+'%  →  S/ '+fmt(r.margenMonto);
+  document.getElementById('m-subtotal').textContent=fmt(r.base);
+  document.getElementById('m-total').textContent=fmt(r.total);
+}
+
+function showPreview(){
+  document.getElementById('pv-company').textContent=document.getElementById('proj-nombre').value||'Nombre del proyecto';
+  document.getElementById('pv-num').textContent='N° '+document.getElementById('pres-num').value;
+  document.getElementById('pv-fecha').textContent='Fecha: '+document.getElementById('pres-fecha').value;
+  document.getElementById('pv-vigencia').textContent='Vigencia: '+(document.getElementById('proj-vigencia').value||'—');
+  document.getElementById('pv-cliente').textContent=document.getElementById('cli-nombre').value||'—';
+  document.getElementById('pv-ruc').textContent='RUC: '+(document.getElementById('cli-ruc').value||'—');
+  document.getElementById('pv-pago').textContent=document.getElementById('pres-pago').value||'—';
+  document.getElementById('pv-notas').textContent=document.getElementById('notas').value||'—';
+
+  let eq=0;
+  const pb=document.getElementById('pv-profiles-body');pb.innerHTML='';
+  document.querySelectorAll('#profiles-container .profile-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');const sel=r.querySelector('select');
+    const n=inp[0].value||'—',t=sel?sel.value:'interno';
+    const ta=parseFloat(inp[1].value)||0,h=parseFloat(inp[2].value)||0,c=ta*h;eq+=c;
+    const b=t==='interno'?'<span class="badge badge-int">Interno</span>':'<span class="badge badge-ext">Externo</span>';
+    pb.innerHTML+=`<tr><td>${n}</td><td>${b}</td><td class="num">${fmt(ta)}</td><td class="num">${fmt(h)}</td><td class="num">${fmt(c)}</td></tr>`;
+  });
+
+  let it=0;
+  const ib=document.getElementById('pv-items-body');ib.innerHTML='';
+  document.querySelectorAll('#items-container .item-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    const d=inp[0].value||'—',c=parseFloat(inp[1].value)||0,p=parseFloat(inp[2].value)||0,s=c*p;it+=s;
+    ib.innerHTML+=`<tr><td>${d}</td><td class="num">${c}</td><td class="num">${fmt(p)}</td><td class="num">${fmt(s)}</td></tr>`;
+  });
+
+  let lg=0;
+  const lb=document.getElementById('pv-logistics-body');lb.innerHTML='';
+  document.querySelectorAll('#logistics-container .logistic-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');const sel=r.querySelector('select');
+    const d=inp[0].value||'—',cat=sel?sel.value:'—',m=parseFloat(inp[1].value)||0;lg+=m;
+    lb.innerHTML+=`<tr><td>${d}</td><td><span class="badge badge-log">${cat}</span></td><td class="num">${fmt(m)}</td></tr>`;
+  });
+
+  let pv=0;
+  const prvb=document.getElementById('pv-providers-body');prvb.innerHTML='';
+  document.querySelectorAll('#providers-container .provider-row').forEach(r=>{
+    const inp=r.querySelectorAll('input');const sel=r.querySelector('select');
+    const n=inp[0].value||'—',con=inp[1].value||'—',mon=sel?sel.value:'PEN',m=parseFloat(inp[2].value)||0;
+    const s=mon==='USD'?m*TC:m;pv+=s;
+    const ms=mon==='USD'?`$ ${fmt(m)} USD`:`S/ ${fmt(m)}`;
+    prvb.innerHTML+=`<tr><td>${n}</td><td>${con}</td><td class="num"><span class="badge badge-prov">${mon}</span></td><td class="num">${ms}</td><td class="num">${fmt(s)}</td></tr>`;
+  });
+
+  const r=calcAll();
+  document.getElementById('pv-t-equipo').textContent='S/ '+fmt(r.eq);
+  document.getElementById('pv-t-items').textContent='S/ '+fmt(r.it);
+  document.getElementById('pv-t-log').textContent='S/ '+fmt(r.lg);
+  document.getElementById('pv-t-prov').textContent='S/ '+fmt(r.pv);
+  document.getElementById('pv-t-costosub').textContent='S/ '+fmt(r.subtotalCostos);
+  document.getElementById('pv-t-bono-label').textContent='Bono de venta ('+r.bonoPct+'%)';
+  document.getElementById('pv-t-bono').textContent='S/ '+fmt(r.bonoMonto);
+  document.getElementById('pv-t-margen-label').textContent='Margen ('+r.margenPct+'%)';
+  document.getElementById('pv-t-margen').textContent='S/ '+fmt(r.margenMonto);
+  document.getElementById('pv-t-desc').textContent='— S/ '+fmt(r.desc);
+  document.getElementById('pv-t-igv-label').textContent='IGV ('+r.igvPct+'%)';
+  document.getElementById('pv-t-igv').textContent='S/ '+fmt(r.igvMonto);
+  document.getElementById('pv-t-total').textContent='S/ '+fmt(r.total);
+
+  document.getElementById('form-area').style.display='none';
+  document.getElementById('preview-area').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function backToForm(){
+  document.getElementById('form-area').style.display='block';
+  document.getElementById('preview-area').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function resetForm(){
+  if(!confirm('¿Crear un nuevo presupuesto? Se perderán los datos actuales.'))return;
+  ['profiles-container','items-container','logistics-container','providers-container'].forEach(id=>{
+    document.getElementById(id).innerHTML='';
+  });
+  pC=0;iC=0;lC=0;prC=0;
+  ['cli-nombre','cli-ruc','proj-nombre','proj-vigencia','pres-pago','notas'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('margen').value=30;
+  document.getElementById('bono').value=5;
+  document.getElementById('igv').value=18;
+  document.getElementById('descuento').value=0;
+  document.getElementById('tc').value=3.75;
+  document.getElementById('pres-num').value=genNum();
+  recalc();
+}
+
+function exportPDF(){
+  const el=document.getElementById('printable');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <title>Presupuesto</title>
+  <style>
+    :root{--blue:#0453b2;--red:#ff1a4b;--bg:#f4f3ee;--text:#101010;--muted:#6b7280;--border:#dde3ee}
+    body{font-family:'Manrope',Arial,sans-serif;padding:2.5rem;color:var(--text);font-size:13px;background:#fff}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin:.3rem 0 .75rem}
+    th{text-align:left;font-size:10px;font-weight:700;color:var(--muted);padding:5px 0;border-bottom:1.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+    td{padding:6px 0;border-bottom:1px solid #f3f3f3;vertical-align:top}
+    .num{text-align:right}
+    .totals-block{margin-left:auto;width:300px;font-size:13px}
+    .totals-row{display:flex;justify-content:space-between;padding:4px 0;font-weight:500}
+    .totals-row.sub{color:var(--muted);font-weight:400}
+    .totals-row.bono-row{color:var(--red);font-weight:700}
+    .totals-row.mg{color:#0a7c3e;font-weight:700}
+    .totals-row.total-final{font-weight:800;font-size:15px;border-top:2px solid var(--text);margin-top:6px;padding-top:9px}
+    .badge{font-size:10px;padding:1px 7px;border-radius:10px;font-weight:700}
+    .badge-int{background:#dbeafe;color:#1d4ed8}
+    .badge-ext{background:#fef3c7;color:#b45309}
+    .badge-prov{background:#fee2e2;color:#b91c1c}
+    .badge-log{background:#f3f4f6;color:#374151}
+    hr{border:none;border-top:1px solid var(--border);margin:.75rem 0}
+    .pv-company{font-size:22px;font-weight:800}
+    .pv-sec{font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin:1rem 0 .3rem;border-bottom:1.5px solid #b1ccf2;padding-bottom:4px}
+    .bluebar{background:var(--blue);height:3px;border-radius:2px;margin-bottom:1.25rem}
+    .pv-num{font-size:13px;font-weight:700;color:var(--blue)}
+  </style></head><body>${el.outerHTML}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),600);
+}
+
+initDefaults();
+</script>
+</body>
+</html>
